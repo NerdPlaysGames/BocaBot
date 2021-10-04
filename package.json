@@ -1,0 +1,30 @@
+{
+  "name": "bocabot",
+  "version": "0.0.1",
+  "description": "",
+  "main": "bot.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Nerd",
+  "license": "UNLICENCED",
+  "dependencies": {
+    "danno-tools": "^1.1.2",
+    "discord.js": "^13.1.0",
+    "dotenv": "^10.0.0",
+    "slash-create": "^4.2.0",
+    "socket.io-client": "^4.2.0"
+  },
+  "devDependencies": {
+    "eslint": "^7.2.0",
+    "eslint-config-almeida": "^1.0.7",
+    "eslint-plugin-import": "^2.20.2"
+  },
+  "eslintConfig": {
+    "extends": "almeida",
+    "rules": {
+      "no-await-in-loop": "off",
+      "linebreak-style": "off"
+    }
+  }
+}
