@@ -70,7 +70,7 @@ client.on('ready', () => {
   notamChannel = guild.channels.cache.get(process.env.notams);
 });
 
-<<<<<<< HEAD
+
 client.on('interactionCreate', async (interaction) => {
   if (interaction.commandName === 'closures' && interaction.options._subcommand === 'listed') {
     const response = await fetch('https://status.nerdpg.live/api/roadClosures');
@@ -131,8 +131,6 @@ client.on('interactionCreate', async (interaction) => {
   }
 });
 
-=======
->>>>>>> 51f176c79e02d5c9d16d27676774a06dd4f8cc9f
 async function closureUpdate() {
   const response = await fetch('https://status.nerdpg.live/api/roadClosures/today');
   const data = await response.json();
