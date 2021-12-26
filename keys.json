@@ -1,0 +1,23 @@
+{
+    "expected": "Expected Testing Today?",
+    "spXconf": "SpaceX confirmation",
+    "stateOfRoad": "State of Road",
+    "noticeMariner": "Notice to Mariners (NMs) issued",
+    "overPressure": "Over Pressure Notice",
+    "villageEvac": "Village Evacuated",
+    "stateOfLS": "State of launchsite",
+    "recondensorActual": "Recondensor - Actual",
+    "recondensorPredicted": "Recondensor - Predicted",
+    "fuelingActual": "Fueling - Actual",
+    "fuelingPredicted": "Fueling - Predicted",
+    "t0Actual": "T-0 - Actual",
+    "t0Predicted": "T-0 - Predicted",
+    "skirtVentActual": "Skirt Vent - Actual",
+    "skirtVentPredicted": "Skirt Vent - Predicted",
+    "methaneVentActual": "Methane Vent - Actual",
+    "methaneVentPredicted": "Methane Vent - Predicted",
+    "triVentActual": "Engine Chill - Actual",
+    "triVentPredicted": "Engine Chill - Predicted",
+    "status": "Status",
+    "type": "Type"
+}

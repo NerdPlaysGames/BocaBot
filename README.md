@@ -11,7 +11,8 @@ This bot is a simple script that checks my personal service that broadcasts new 
 4. Intialize bot project on Discord
 5. Copy `.template.env` file and rename to `.env`
 6. Fill in information for the bots
-7. Run `node bot.js`
+7. Run `node setup.js` to setup slash commands (May take up to an hour to populate)
+8. Run `node bot.js`
 
 ## Issues
 If you encounter any issues or need help, checkout the repo Issues tab...
