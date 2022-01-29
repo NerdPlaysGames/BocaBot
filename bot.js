@@ -66,8 +66,14 @@ ioClient.on('newClosure', async (data) => {
 ioClient.on('newNOTAM', async (data) => {
   let embed = new MessageEmbed();
   embed.setTitle('New TFR!');
-  embed.addField('Altitude', data.altitude);
-  embed.addField('Date', data.date);
+  embed.addField('ID', `[${data.tfrID}](${data.link})`, true);
+  embed.addField('Altitude', `${data.lowerAltitude}${data.units} - ${data.upperAltitude}${data.units}`, true);
+  let start = new Date(`${data.dateStart} UTC`);
+  let end = new Date(`${data.dateEnd} UTC`);
+  // convert start & end to epoch
+  let startEpoch = start.getTime() / 1000;
+  let endEpoch = end.getTime() / 1000;
+  embed.addField('Date', `Starts: <t:${startEpoch}:F>(<t:${startEpoch}:R>)\nEnds: <t:${endEpoch}:F>(<t:${endEpoch}:R>)`);
 
   let tfrMsg = await notamChannel.send({ embeds: [embed] });
   await tfrMsg.crosspost();
