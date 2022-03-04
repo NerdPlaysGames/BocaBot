@@ -46,17 +46,13 @@ ioClient.on('newClosure', async (data) => {
   embed.addField('Status', data.status, true);
   embed.addField('Date', data.date, true);
   embed.addField('Time', data.time, true);
-
   let startTime = data.time.split(' to ')[0].replace('.', '');
   let closureDateStart = new Date(`${data.date} ${startTime} CST`);
-
   let endTime = data.time.split(' to ')[1].replace('.', '');
   let closureDateEnd = new Date(`${data.date} ${endTime} CST`);
-
   if (endTime.toUpperCase().includes('12:00 AM')) {
     closureDateEnd.setDate(closureDateEnd.getDate() + 1);
   }
-
   embed.setDescription(`Starts: <t:${closureDateStart.getTime() / 1000}:R>\nEnds: <t:${closureDateEnd.getTime() / 1000}:R>`);
   let RCMSG = await rcChannel.send({ embeds: [embed] });
   await RCMSG.crosspost();
@@ -68,6 +64,8 @@ ioClient.on('newNOTAM', async (data) => {
   embed.setTitle('New TFR!');
   embed.addField('ID', `[${data.tfrID}](${data.link})`, true);
   embed.addField('Altitude', `${data.lowerAltitude}${data.units} - ${data.upperAltitude}${data.units}`, true);
+  let URLID = data.tfrID.replace('/', '_');
+  embed.setImage(`https://tfr.faa.gov/save_maps/sect_${URLID}.gif`);
   let start = new Date(`${data.dateStart} UTC`);
   let end = new Date(`${data.dateEnd} UTC`);
   // convert start & end to epoch
