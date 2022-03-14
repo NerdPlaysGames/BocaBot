@@ -47,9 +47,9 @@ ioClient.on('newClosure', async (data) => {
   embed.addField('Date', data.date, true);
   embed.addField('Time', data.time, true);
   let startTime = data.time.split(' to ')[0].replace('.', '');
-  let closureDateStart = new Date(`${data.date} ${startTime} CST`);
+  let closureDateStart = new Date(`${data.date} ${startTime} CDT`);
   let endTime = data.time.split(' to ')[1].replace('.', '');
-  let closureDateEnd = new Date(`${data.date} ${endTime} CST`);
+  let closureDateEnd = new Date(`${data.date} ${endTime} CDT`);
   if (endTime.toUpperCase().includes('12:00 AM')) {
     closureDateEnd.setDate(closureDateEnd.getDate() + 1);
   }
@@ -180,10 +180,10 @@ client.on('interactionCreate', async (interaction) => {
         let closure = data[i];
 
         let startTime = closure.time.split(' to ')[0].replace('.', '');
-        let closureDateStart = new Date(`${closure.date} ${startTime} CST`);
+        let closureDateStart = new Date(`${closure.date} ${startTime} CDT`);
 
         let endTime = closure.time.split(' to ')[1].replace('.', '');
-        let closureDateEnd = new Date(`${closure.date} ${endTime} CST`);
+        let closureDateEnd = new Date(`${closure.date} ${endTime} CDT`);
 
         if (endTime.toUpperCase().includes('12:00 AM')) {
           closureDateEnd.setDate(closureDateEnd.getDate() + 1);
@@ -209,10 +209,10 @@ client.on('interactionCreate', async (interaction) => {
         let closure = data[i];
 
         let startTime = closure.time.split(' to ')[0].replace('.', '');
-        let closureDateStart = new Date(`${closure.date} ${startTime} CST`);
+        let closureDateStart = new Date(`${closure.date} ${startTime} CDT`);
 
         let endTime = closure.time.split(' to ')[1].replace('.', '');
-        let closureDateEnd = new Date(`${closure.date} ${endTime} CST`);
+        let closureDateEnd = new Date(`${closure.date} ${endTime} CDT`);
 
         if (endTime.toUpperCase().includes('12:00 AM')) {
           closureDateEnd.setDate(closureDateEnd.getDate() + 1);
@@ -345,10 +345,10 @@ async function closureUpdate() {
       let closure = data[i];
 
       let startTime = closure.time.split(' to ')[0].replace('.', '');
-      let closureDateStart = new Date(`${closure.date} ${startTime} CST`);
+      let closureDateStart = new Date(`${closure.date} ${startTime} CDT`);
 
       let endTime = closure.time.split(' to ')[1].replace('.', '');
-      let closureDateEnd = new Date(`${closure.date} ${endTime} CST`);
+      let closureDateEnd = new Date(`${closure.date} ${endTime} CDT`);
 
       if (endTime.toUpperCase().includes('12:00 AM')) {
         closureDateEnd.setDate(closureDateEnd.getDate() + 1);
