@@ -18,6 +18,9 @@
     "methaneVentPredicted": "Methane Vent - Predicted",
     "triVentActual": "Engine Chill - Actual",
     "triVentPredicted": "Engine Chill - Predicted",
+    "date": "Date",
+    "name": "Name",
     "status": "Status",
+    "time": "Time",
     "type": "Type"
 }
