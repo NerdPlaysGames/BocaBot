@@ -24,7 +24,7 @@ fetch(url, closureOptions)
 
 let setupOptions = {
   // eslint-disable-next-line max-len
-  body: '{"name": "follow","type": 1,"description": "Follows a channel","options": [{"name": "daily-rc-updates","description": "Follows a channel that puts a message about the days closure every day at 5am Central","type": 1  },  {"name": "roadclosures","description": "Follows a channel that sends update every time there is an new/updated closure","type": 1},{"name": "tfr","description": "Follows a channel that sends update every time there is an new/updated TFR","type": 1},{"name": "data","description": "Follows a channel that sends update every time data is changed on the website","type": 1}]}',
+  body: '{"name": "follow","type": 1,"description": "Follows a channel","options": [{"name": "daily-rc-updates","description": "Follows a channel that puts a message about the days closure every day at 5am Central","type": 1  },  {"name": "roadclosures","description": "Follows a channel that sends update every time there is an new/updated closure","type": 1},{"name": "text","description": "Follows a channel that sends update every time there is a text message from the Cameron County text message system","type": 1},{"name": "tfr","description": "Follows a channel that sends update every time there is an new/updated TFR","type": 1},{"name": "data","description": "Follows a channel that sends update every time data is changed on the website","type": 1}]}',
   headers: {
     Authorization: `Bot ${process.env.token}`,
     'Content-Type': 'application/json',

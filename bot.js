@@ -17,7 +17,7 @@ let keys = require('./keys.json');
 /**
  * @type {NewsChannel}
  */
-let dataChannel, muChannel, notamChannel, rcChannel;
+let dataChannel, muChannel, notamChannel, rcChannel, textMessageChannel;
 
 // Create a new client instance
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_WEBHOOKS] });
@@ -31,6 +31,15 @@ client.on('ready', async () => {
   notamChannel = await guild.channels.cache.get(process.env.notams);
   dataChannel = await guild.channels.cache.get(process.env.datachannel);
   muChannel = await guild.channels.cache.get(process.env.morningUpdateChannel);
+  textMessageChannel = await guild.channels.cache.get(process.env.textMessageChannel);
+});
+
+ioClient.on('textmessages', async (data) => {
+  let embed = new MessageEmbed();
+  embed.setTitle('New Message from Cameron County');
+  embed.setDescription(data);
+  let txtmsg = await textMessageChannel.send({ embeds: [embed] });
+  await txtmsg.crosspost();
 });
 
 // Socket IO stuff
@@ -244,6 +253,15 @@ client.on('interactionCreate', async (interaction) => {
       rcChannel.addFollower(channel);
     }
     interaction.reply({ content: 'You will now receive updates on road closures.', ephemeral: true });
+  }
+
+  if (interaction.commandName === 'follow' && interaction.options._subcommand === 'text') {
+    let channel = interaction.channel;
+    let user = interaction.member;
+    if (user.permissions.has('MANAGE_CHANNELS')) {
+      textMessageChannel.addFollower(channel);
+    }
+    interaction.reply({ content: 'You will now receive updates on text messages from the Cameron County text message system.', ephemeral: true });
   }
 
   if (interaction.commandName === 'follow' && interaction.options._subcommand === 'tfr') {
