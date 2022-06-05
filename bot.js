@@ -5,6 +5,7 @@ require('dotenv').config();
 let path = require('path');
 const Logger = require('danno-tools').Logger;
 const { Client, Intents, MessageEmbed, NewsChannel } = require('discord.js');
+const moment = require('moment');
 const cron = require('node-cron');
 // eslint-disable-next-line no-shadow
 const fetch = require('node-fetch');
@@ -55,14 +56,9 @@ ioClient.on('newClosure', async (data) => {
   embed.addField('Status', data.status, true);
   embed.addField('Date', data.date, true);
   embed.addField('Time', data.time, true);
-  let startTime = data.time.split(' to ')[0].replace('.', '');
-  let closureDateStart = new Date(`${data.date} ${startTime} CDT`);
-  let endTime = data.time.split(' to ')[1].replace('.', '');
-  let closureDateEnd = new Date(`${data.date} ${endTime} CDT`);
-  if (endTime.toUpperCase().includes('12:00 AM')) {
-    closureDateEnd.setDate(closureDateEnd.getDate() + 1);
-  }
-  embed.setDescription(`Starts: <t:${closureDateStart.getTime() / 1000}:R>\nEnds: <t:${closureDateEnd.getTime() / 1000}:R>`);
+  let { start: closureDateStart, end: closureDateEnd } = getClosureTimes(data);
+
+  embed.setDescription(`Starts: <t:${closureDateStart.valueOf() / 1000}:R>\nEnds: <t:${closureDateEnd.valueOf() / 1000}:R>`);
   let RCMSG = await rcChannel.send({ embeds: [embed] });
   await RCMSG.crosspost();
 });
@@ -188,17 +184,9 @@ client.on('interactionCreate', async (interaction) => {
       for (let i = 0; i < data.length; i++) {
         let closure = data[i];
 
-        let startTime = closure.time.split(' to ')[0].replace('.', '');
-        let closureDateStart = new Date(`${closure.date} ${startTime} CDT`);
+        let { start: closureDateStart, end: closureDateEnd } = getClosureTimes(closure);
 
-        let endTime = closure.time.split(' to ')[1].replace('.', '');
-        let closureDateEnd = new Date(`${closure.date} ${endTime} CDT`);
-
-        if (endTime.toUpperCase().includes('12:00 AM')) {
-          closureDateEnd.setDate(closureDateEnd.getDate() + 1);
-        }
-
-        embed.addField(`${closure.type} - ${closure.status}`, `Starts:<t:${closureDateStart.getTime() / 1000}:f>(<t:${closureDateStart.getTime() / 1000}:R>)\nEnds: <t:${closureDateEnd.getTime() / 1000}:f>(<t:${closureDateEnd.getTime() / 1000}:R>)`);
+        embed.addField(`${closure.type} - ${closure.status}`, `Starts:<t:${closureDateStart.valueOf() / 1000}:f>(<t:${closureDateStart.valueOf() / 1000}:R>)\nEnds: <t:${closureDateEnd.valueOf() / 1000}:f>(<t:${closureDateEnd.valueOf() / 1000}:R>)`);
       }
     } else {
       embed.setDescription('There are no closures listed :\'(');
@@ -217,17 +205,9 @@ client.on('interactionCreate', async (interaction) => {
       for (let i = 0; i < data.length; i++) {
         let closure = data[i];
 
-        let startTime = closure.time.split(' to ')[0].replace('.', '');
-        let closureDateStart = new Date(`${closure.date} ${startTime} CDT`);
+        let { start: closureDateStart, end: closureDateEnd } = getClosureTimes(closure);
 
-        let endTime = closure.time.split(' to ')[1].replace('.', '');
-        let closureDateEnd = new Date(`${closure.date} ${endTime} CDT`);
-
-        if (endTime.toUpperCase().includes('12:00 AM')) {
-          closureDateEnd.setDate(closureDateEnd.getDate() + 1);
-        }
-
-        embed.addField(`${closure.type} - ${closure.status}`, `Starts:<t:${closureDateStart.getTime() / 1000}:R>\nEnds: <t:${closureDateEnd.getTime() / 1000}:R>`);
+        embed.addField(`${closure.type} - ${closure.status}`, `Starts:<t:${closureDateStart.valueOf() / 1000}:R>\nEnds: <t:${closureDateEnd.valueOf() / 1000}:R>`);
       }
     } else {
       embed.setDescription('There are no closures today :\'(');
@@ -362,17 +342,9 @@ async function closureUpdate() {
     for (let i = 0; i < data.length; i++) {
       let closure = data[i];
 
-      let startTime = closure.time.split(' to ')[0].replace('.', '');
-      let closureDateStart = new Date(`${closure.date} ${startTime} CDT`);
+      let { start: closureDateStart, end: closureDateEnd } = getClosureTimes(closure);
 
-      let endTime = closure.time.split(' to ')[1].replace('.', '');
-      let closureDateEnd = new Date(`${closure.date} ${endTime} CDT`);
-
-      if (endTime.toUpperCase().includes('12:00 AM')) {
-        closureDateEnd.setDate(closureDateEnd.getDate() + 1);
-      }
-
-      embed.addField(`${closure.type} - ${closure.status}`, `Starts:<t:${closureDateStart.getTime() / 1000}:R>\nEnds: <t:${closureDateEnd.getTime() / 1000}:R>`);
+      embed.addField(`${closure.type} - ${closure.status}`, `Starts:<t:${closureDateStart.valueOf() / 1000}:R>\nEnds: <t:${closureDateEnd.valueOf() / 1000}:R>`);
     }
   } else {
     embed.setDescription('There are no closures today :\'(');
@@ -380,6 +352,27 @@ async function closureUpdate() {
 
   let muMsg = await muChannel.send({ embeds: [embed] });
   await muMsg.crosspost();
+}
+
+function getClosureTimes(closure) {
+  // Find if now is in daylight savings time
+  let now = new Date();
+  let isDST = now.getTimezoneOffset() === now.getTimezoneOffset(true);
+
+  let startTime = closure.time.split(' to ')[0].replace('.', '');
+  let closureDateStart = moment(`${closure.date} ${startTime} ${isDST ? 'CDT' : 'CST'}`);
+
+  let endTime = closure.time.split(' to ')[1].replace('.', '');
+  let closureDateEnd = moment(`${closure.date} ${endTime} ${isDST ? 'CDT' : 'CST'}`);
+
+  if (endTime.toUpperCase().includes('12:00 AM')) {
+    closureDateEnd.setDate(closureDateEnd.getDate() + 1);
+  }
+
+  return {
+    end: closureDateEnd,
+    start: closureDateStart,
+  };
 }
 
 // Logs into the bot user
