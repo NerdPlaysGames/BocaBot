@@ -360,10 +360,10 @@ function getClosureTimes(closure) {
   let isDST = now.getTimezoneOffset() === now.getTimezoneOffset(true);
 
   let startTime = closure.time.split(' to ')[0].replace('.', '');
-  let closureDateStart = moment(`${closure.date} ${startTime} ${isDST ? 'CDT' : 'CST'}`);
+  let closureDateStart = (moment(startTime).isValid()) ? moment(`${startTime} ${isDST ? 'CDT' : 'CST'}`) : moment(`${closure.date} ${startTime} ${isDST ? 'CDT' : 'CST'}`);
 
   let endTime = closure.time.split(' to ')[1].replace('.', '');
-  let closureDateEnd = moment(`${closure.date} ${endTime} ${isDST ? 'CDT' : 'CST'}`);
+  let closureDateEnd = (moment(endTime).isValid()) ? moment(`${endTime} ${isDST ? 'CDT' : 'CST'}`) : moment(`${closure.date} ${endTime} ${isDST ? 'CDT' : 'CST'}`);
 
   if (endTime.toUpperCase().includes('12:00 AM')) {
     closureDateEnd.setDate(closureDateEnd.getDate() + 1);
