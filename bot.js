@@ -285,25 +285,35 @@ client.on('interactionCreate', async (interaction) => {
   }
 
   if (interaction.commandName === 'current') {
-    const response = await fetch(`https://${process.env.host}/api/json/current`);
-    const data = await response.json();
+    const dataResponse = await fetch(`https://${process.env.host}/api/json/current`);
+    const currentData = await dataResponse.json();
 
     let embed = new MessageEmbed();
     embed.setTitle('Current Testing Status');
-    let testString = [];
-    for (const i in data.testing) {
-      const dataValue = data.testing[i];
-      testString.push(`${keys[i]}: ${dataValue}`);
-    }
-    let timingString = [];
-    for (const i in data.timing) {
-      const dataObj = data.timing[i];
-      timingString.push(`${keys[`${i}Predicted`]}: ${dataObj.predicted}`);
-      timingString.push(`${keys[`${i}Actual`]}: ${dataObj.actual}`);
+    for (const i in currentData.testing) {
+      const dataValue = currentData.testing[i];
+      embed.addField(keys[i], dataValue);
     }
 
-    embed.addField('Testing', testString.join('\n'));
-    embed.addField('Timing', timingString.join('\n'));
+    interaction.reply({ embeds: [embed] });
+  }
+
+  if (interaction.commandName === 'timing') {
+    let embed = new MessageEmbed();
+    embed.setTitle('Current Testing Status');
+    embed.setDescription('Actual | Predicted');
+
+    const timingResponse = await fetch(`https://${process.env.host}/api/json/timing`);
+    const timingData = await timingResponse.json();
+
+    // Sort timingData by position
+    timingData.sort((a, b) => a.position - b.position);
+
+    for (const i in timingData) {
+      // Fields: name, actual, predicted, position, id
+      const dataObj = timingData[i];
+      embed.addField(dataObj.name, `${dataObj.actual} | ${dataObj.predicted}`);
+    }
 
     interaction.reply({ embeds: [embed] });
   }
