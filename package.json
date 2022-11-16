@@ -13,6 +13,7 @@
     "discord.js": "^13.1.0",
     "dotenv": "^10.0.0",
     "moment": "^2.29.3",
+    "moment-timezone": "^0.5.38",
     "node-cron": "^3.0.0",
     "objectdiff": "^1.1.0",
     "slash-create": "^4.2.0",

@@ -6,6 +6,8 @@ let path = require('path');
 const Logger = require('danno-tools').Logger;
 const { Client, Intents, MessageEmbed, NewsChannel } = require('discord.js');
 const moment = require('moment');
+require('moment-timezone')();
+moment.tz.zone('America/Chicago').abbrs.push('CT');
 const cron = require('node-cron');
 // eslint-disable-next-line no-shadow
 const fetch = require('node-fetch');
@@ -365,17 +367,15 @@ async function closureUpdate() {
 }
 
 function getClosureTimes(closure) {
-  // Find if now is in daylight savings time
-  let now = new Date();
-  let isDST = now.getTimezoneOffset() === now.getTimezoneOffset(true);
-
   let startTime = closure.time.split(' to ')[0].replace('.', '');
-  let closureDateStart = (moment(startTime).isValid()) ? moment(`${startTime} ${isDST ? 'CDT' : 'CST'}`) : moment(`${closure.date} ${startTime} ${isDST ? 'CDT' : 'CST'}`);
+  let date = moment(closure.date, 'dddd, MMMM DD, YYYY');
+  let timezone = date.tz('America/Chicago').format('Z');
+  let closureDateStart = (moment(startTime).isValid()) ? moment(`${startTime}${timezone}`) : moment(`${closure.date} ${startTime}${timezone}`, 'dddd, MMMM DD, YYYY h:mm aZ');
 
   let endTime = closure.time.split(' to ')[1].replace('.', '');
-  let closureDateEnd = (moment(endTime).isValid()) ? moment(`${endTime} ${isDST ? 'CDT' : 'CST'}`) : moment(`${closure.date} ${endTime} ${isDST ? 'CDT' : 'CST'}`);
+  let closureDateEnd = (moment(endTime).isValid()) ? moment(`${endTime}${timezone}`) : moment(`${closure.date} ${endTime}${timezone}`, 'dddd, MMMM DD, YYYY h:mm aZ');
 
-  if (endTime.toUpperCase().includes('12:00 AM')) {
+  if (endTime.toUpperCase().includes('AM')) {
     closureDateEnd.setDate(closureDateEnd.getDate() + 1);
   }
 
