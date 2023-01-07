@@ -368,12 +368,14 @@ async function closureUpdate() {
 
 function getClosureTimes(closure) {
   let startTime = closure.time.split(' to ')[0].replace('.', '');
-  let date = moment(closure.date, 'dddd, MMMM DD, YYYY');
+  let regex = /(\w+,?\s)?(\w+)\s(\d+),\s(\d+)/;
+  let match = closure.new.date.match(regex);
+  let date = moment(`${match[2]} ${match[3]}, ${match[4]}`, 'MMM D, YYYY');
   let timezone = date.tz('America/Chicago').format('Z');
-  let closureDateStart = (moment(startTime).isValid()) ? moment(`${startTime}${timezone}`) : moment(`${closure.date} ${startTime}${timezone}`, 'dddd, MMMM DD, YYYY h:mm aZ');
+  let closureDateStart = (moment(startTime).isValid()) ? moment(`${startTime}${timezone}`) : moment(`${match[2]} ${match[3]}, ${match[4]} ${startTime}${timezone}`, 'MMM D, YYYY h:mm aZ');
 
   let endTime = closure.time.split(' to ')[1].replace('.', '');
-  let closureDateEnd = (moment(endTime).isValid()) ? moment(`${endTime}${timezone}`) : moment(`${closure.date} ${endTime}${timezone}`, 'dddd, MMMM DD, YYYY h:mm aZ');
+  let closureDateEnd = (moment(endTime).isValid()) ? moment(`${endTime}${timezone}`) : moment(`${match[2]} ${match[3]}, ${match[4]} ${endTime}${timezone}`, 'MMM D, YYYY h:mm aZ');
 
   if (endTime.toUpperCase().includes('AM')) {
     closureDateEnd.setDate(closureDateEnd.getDate() + 1);
