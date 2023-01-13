@@ -369,7 +369,7 @@ async function closureUpdate() {
 function getClosureTimes(closure) {
   let startTime = closure.time.split(' to ')[0].replace('.', '');
   let regex = /(\w+,?\s)?(\w+)\s(\d+),\s(\d+)/;
-  let match = closure.new.date.match(regex);
+  let match = closure.date.match(regex);
   let date = moment(`${match[2]} ${match[3]}, ${match[4]}`, 'MMM D, YYYY');
   let timezone = date.tz('America/Chicago').format('Z');
   let closureDateStart = (moment(startTime).isValid()) ? moment(`${startTime}${timezone}`) : moment(`${match[2]} ${match[3]}, ${match[4]} ${startTime}${timezone}`, 'MMM D, YYYY h:mm aZ');
