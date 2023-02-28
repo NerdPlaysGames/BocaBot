@@ -25,7 +25,7 @@ const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_
 
 // Fires once when the bot is ready
 client.on('ready', async () => {
-  logger.info('Discord bot ready');
+  logger.info(`Discord bot ready as ${client.user.tag}!`);
   let guild = await client.guilds.cache.get(process.env.guild);
 
   rcChannel = await guild.channels.cache.get(process.env.roadClosuresChannel);
@@ -365,8 +365,8 @@ async function closureUpdate() {
 }
 
 function getClosureTimes(closure) {
-  let closureDateStart = moment(closure.timestamps.start, 'Z');
-  let closureDateEnd = moment(closure.timestamps.end, 'Z');
+  let closureDateStart = moment(closure.timestamps.start, 'X');
+  let closureDateEnd = moment(closure.timestamps.end, 'X');
 
   return {
     end: closureDateEnd,
