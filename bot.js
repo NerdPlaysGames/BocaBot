@@ -6,8 +6,6 @@ let path = require('path');
 const Logger = require('danno-tools').Logger;
 const { Client, Intents, MessageEmbed, NewsChannel } = require('discord.js');
 const moment = require('moment');
-require('moment-timezone')();
-moment.tz.zone('America/Chicago').abbrs.push('CT');
 const cron = require('node-cron');
 // eslint-disable-next-line no-shadow
 const fetch = require('node-fetch');
@@ -60,7 +58,7 @@ ioClient.on('newClosure', async (data) => {
   embed.addField('Time', data.time, true);
   let { start: closureDateStart, end: closureDateEnd } = getClosureTimes(data);
 
-  embed.setDescription(`Starts: <t:${closureDateStart.valueOf() / 1000}:R>\nEnds: <t:${closureDateEnd.valueOf() / 1000}:R>`);
+  embed.setDescription(`Starts: <t:${closureDateStart.format('X')}:R>\nEnds: <t:${closureDateEnd.format('X')}:R>`);
   let RCMSG = await rcChannel.send({ embeds: [embed] });
   await RCMSG.crosspost();
 });
@@ -188,7 +186,7 @@ client.on('interactionCreate', async (interaction) => {
 
         let { start: closureDateStart, end: closureDateEnd } = getClosureTimes(closure);
 
-        embed.addField(`${closure.type} - ${closure.status}`, `Starts:<t:${closureDateStart.valueOf() / 1000}:f>(<t:${closureDateStart.valueOf() / 1000}:R>)\nEnds: <t:${closureDateEnd.valueOf() / 1000}:f>(<t:${closureDateEnd.valueOf() / 1000}:R>)`);
+        embed.addField(`${closure.type} - ${closure.status}`, `Starts:<t:${closureDateStart.format('X')}:f>(<t:${closureDateStart.format('X')}:R>)\nEnds: <t:${closureDateEnd.format('X')}:f>(<t:${closureDateEnd.format('X')}:R>)`);
       }
     } else {
       embed.setDescription('There are no closures listed :\'(');
@@ -209,7 +207,7 @@ client.on('interactionCreate', async (interaction) => {
 
         let { start: closureDateStart, end: closureDateEnd } = getClosureTimes(closure);
 
-        embed.addField(`${closure.type} - ${closure.status}`, `Starts:<t:${closureDateStart.valueOf() / 1000}:R>\nEnds: <t:${closureDateEnd.valueOf() / 1000}:R>`);
+        embed.addField(`${closure.type} - ${closure.status}`, `Starts:<t:${closureDateStart.format('X')}:R>\nEnds: <t:${closureDateEnd.format('X')}:R>`);
       }
     } else {
       embed.setDescription('There are no closures today :\'(');
@@ -356,7 +354,7 @@ async function closureUpdate() {
 
       let { start: closureDateStart, end: closureDateEnd } = getClosureTimes(closure);
 
-      embed.addField(`${closure.type} - ${closure.status}`, `Starts:<t:${closureDateStart.valueOf() / 1000}:R>\nEnds: <t:${closureDateEnd.valueOf() / 1000}:R>`);
+      embed.addField(`${closure.type} - ${closure.status}`, `Starts:<t:${closureDateStart.format('X')}:R>\nEnds: <t:${closureDateEnd.format('X')}:R>`);
     }
   } else {
     embed.setDescription('There are no closures today :\'(');
@@ -367,19 +365,8 @@ async function closureUpdate() {
 }
 
 function getClosureTimes(closure) {
-  let startTime = closure.time.split(' to ')[0].replace('.', '');
-  let regex = /(\w+,?\s)?(\w+)\s(\d+),\s(\d+)/;
-  let match = closure.date.match(regex);
-  let date = moment(`${match[2]} ${match[3]}, ${match[4]}`, 'MMM D, YYYY');
-  let timezone = date.tz('America/Chicago').format('Z');
-  let closureDateStart = (moment(startTime).isValid()) ? moment(`${startTime}${timezone}`) : moment(`${match[2]} ${match[3]}, ${match[4]} ${startTime}${timezone}`, 'MMM D, YYYY h:mm aZ');
-
-  let endTime = closure.time.split(' to ')[1].replace('.', '');
-  let closureDateEnd = (moment(endTime).isValid()) ? moment(`${endTime}${timezone}`) : moment(`${match[2]} ${match[3]}, ${match[4]} ${endTime}${timezone}`, 'MMM D, YYYY h:mm aZ');
-
-  if (endTime.toUpperCase().includes('AM')) {
-    closureDateEnd.setDate(closureDateEnd.getDate() + 1);
-  }
+  let closureDateStart = moment(closure.timestamps.start, 'Z');
+  let closureDateEnd = moment(closure.timestamps.end, 'Z');
 
   return {
     end: closureDateEnd,
